@@ -5,16 +5,14 @@ services:
     image: jwilder/nginx-proxy
     restart: always
     ports:
-      - '8080:80'
+      - "8080:80"
     volumes:
       - '/var/run/docker.sock:/tmp/docker.sock:ro'
   mysql-redmine:
     image: mysql:5.7
     restart: always
     ports:
-      - 3307:3306
-    networks:
-      - redmine-red
+      - "3307:3306"
     volumes:
       - ./dataMysqlRedmine:/var/lib/mysql
     environment:
@@ -27,16 +25,17 @@ services:
     image: redmine:4.0.4
     restart: always
     ports:
-      - 3001:3000
+      - "3003:3000"
     volumes:
       - ./dataRedmine/archivos:/usr/src/redmine/files
       - ./dataRedmine/plugins:/usr/src/redmine/plugins
       - ./dataRedmine/themes:/usr/src/redmine/themes
     environment:
-      VIRTUAL_HOST=www.test.redmine.com
-      VIRTUAL_PORT=3000
-      REDMINE_DB_USERNAME= redmineuser
-      REDMINE_DB_PASSWORD= usersecret
-      REDMINE_DB_DATABASE= redmine
-networks:
-  redmine-red:
+      - VIRTUAL_HOST:www.test.redmine.com
+      - VIRTUAL_PORT:3000
+      - REDMINE_DB_MYSQL= mysql-redmine
+      - REDMINE_DB_USERNAME= redmineuser
+      - REDMINE_DB_PASSWORD= usersecret
+      - REDMINE_DB_DATABASE= redmine
+
+

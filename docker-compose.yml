@@ -8,9 +8,6 @@ services:
       - '8080:80'
     volumes:
       - '/var/run/docker.sock:/tmp/docker.sock:ro'
-    networks:
-      - nginx-proxy
-      
   mysql-redmine:
     image: mysql:5.7
     restart: always
@@ -26,56 +23,20 @@ services:
       MYSQL_PASSWORD: usersecret
       MYSQL_DATABASE: redmine
   
-  mysql-gogs:
-    image: mysql:5.7
-    restart: always
-    ports:
-      - 3306:3306
-    networks:
-      - redmine-red
-    volumes:
-      - ./dataMysqlGogs:/var/lib/mysql
-    environment:
-      - MYSQL_ROOT_PASSWORD=root
-      - MYSQL_DATABASE=gogs
-      - MYSQL_USER=usergogs
-      - MYSQL_PASSWORD=passgogs
-  
   redmine:
     image: redmine:4.0.4
     restart: always
     ports:
       - 3001:3000
-    networks:
-      - redmine-red
     volumes:
       - ./dataRedmine/archivos:/usr/src/redmine/files
       - ./dataRedmine/plugins:/usr/src/redmine/plugins
       - ./dataRedmine/themes:/usr/src/redmine/themes
     environment:
-      VIRTUAL_HOST=www.servisoft.redmine.com
+      VIRTUAL_HOST=www.test.redmine.com
       VIRTUAL_PORT=3000
       REDMINE_DB_USERNAME= redmineuser
       REDMINE_DB_PASSWORD= usersecret
       REDMINE_DB_DATABASE= redmine
-  
-  gogs:
-    image: gogs/gogs:latest
-    restart: always
-    ports:
-      - "3000:3000"
-      - "10022:22"
-    networks:
-      - redmine-red
-    volumes:
-      - ./dataGogs:/data
-    environment:
-      VIRTUAL_HOST=www.servisoft.git.com
-      VIRTUAL_PORT=3000  
-
 networks:
   redmine-red:
-volumes:
-  - volumenCompartidoGit:/data
-
-   

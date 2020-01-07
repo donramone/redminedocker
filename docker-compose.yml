@@ -1,41 +1,39 @@
 version: '3'
-
 services:
   nginx-proxy:
     image: jwilder/nginx-proxy
-    restart: always
     ports:
-      - "8080:80"
+      - "80:80"
+    networks:
+      - redmine-red
     volumes:
-      - '/var/run/docker.sock:/tmp/docker.sock:ro'
+      - /var/run/docker.sock:/tmp/docker.sock:ro
   mysql-redmine:
     image: mysql:5.7
     restart: always
     ports:
       - "3307:3306"
-    volumes:
-      - ./dataMysqlRedmine:/var/lib/mysql
     environment:
-      MYSQL_ROOT_PASSWORD: rootsecret
-      MYSQL_USER: redmineuser
-      MYSQL_PASSWORD: usersecret
-      MYSQL_DATABASE: redmine
-  
+      -  MYSQL_ROOT_PASSWORD=root
+      -  MYSQL_USER=red
+      -  MYSQL_PASSWORD=secret
+      -  MYSQL_DATABASE=redmine
+    networks:
+      - redmine-red
   redmine:
     image: redmine:4.0.4
     restart: always
     ports:
-      - "3003:3000"
-    volumes:
-      - ./dataRedmine/archivos:/usr/src/redmine/files
-      - ./dataRedmine/plugins:/usr/src/redmine/plugins
-      - ./dataRedmine/themes:/usr/src/redmine/themes
+      - "3000:3000"
+    networks:
+      - redmine-red
     environment:
-      - VIRTUAL_HOST:www.test.redmine.com
-      - VIRTUAL_PORT:3000
-      - REDMINE_DB_MYSQL= mysql-redmine
-      - REDMINE_DB_USERNAME= redmineuser
-      - REDMINE_DB_PASSWORD= usersecret
-      - REDMINE_DB_DATABASE= redmine
-
-
+      -  VIRTUAL_HOST=luigi.redmine.com
+      -  VIRTUAL_PORT=3000
+      -  REDMINE_DB_MYSQL=mysql-redmine
+      -  REDMINE_DB_USERNAME=red
+      -  REDMINE_DB_PASSWORD=secret
+      -  REDMINE_DB_DATABASE=redmine
+networks:
+  redmine-red:
+    driver: bridge

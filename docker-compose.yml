@@ -22,7 +22,7 @@ services:
     networks:
       - redmine-network
   redmine:
-    image: redmine:4.0.4
+    image: redmine:4.1.0
     restart: always
     ports:
       - "3000:3000"
